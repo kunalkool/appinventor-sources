@@ -228,6 +228,8 @@ public final class MockForm extends MockContainer {
   private static final String PROPERTY_NAME_PRIMARY_COLOR_DARK = "PrimaryColorDark";
   private static final String PROPERTY_NAME_ACCENT_COLOR = "AccentColor";
   private static final String PROPERTY_NAME_THEME = "Theme";
+  private static final String PROPERTY_NAME_APPLICATION_PACKAGE = "ApplicationPackage";
+  private static final String PROPERTY_NAME_MINAPI = "MinAPI";
 
   // Form UI components
   AbsolutePanel formWidget;
@@ -456,11 +458,11 @@ public final class MockForm extends MockContainer {
   @Override
   protected void addWidthHeightProperties() {
     addProperty(PROPERTY_NAME_WIDTH, "" + PORTRAIT_WIDTH, null,
-        "Appearance", "Specifies the width of the component on the screen.",
+	"Appearance", "Specifies the width of the component on the screen.",
         PropertyTypeConstants.PROPERTY_TYPE_LENGTH, null,
         new YoungAndroidLengthPropertyEditor());
     addProperty(PROPERTY_NAME_HEIGHT, "" + LENGTH_PREFERRED, null,
-        "Appearance", "Specifies the height of the component on the screen.",
+	"Appearance", "Specifies the height of the component on the screen.",
         PropertyTypeConstants.PROPERTY_TYPE_LENGTH, null,
         new YoungAndroidLengthPropertyEditor());
   }
@@ -503,7 +505,9 @@ public final class MockForm extends MockContainer {
       case PROPERTY_NAME_PRIMARY_COLOR:
       case PROPERTY_NAME_PRIMARY_COLOR_DARK:
       case PROPERTY_NAME_ACCENT_COLOR:
-      case PROPERTY_NAME_THEME: {
+      case PROPERTY_NAME_THEME: 
+	  case PROPERTY_NAME_APPLICATION_PACKAGE:
+	  case PROPERTY_NAME_MINAPI: {
         return editor.isScreen1();
       }
 
@@ -733,7 +737,25 @@ public final class MockForm extends MockContainer {
       formWidget.removeStyleDependentName("Dark");
     }
   }
-
+  
+  //Adding Property for ApplicationPackage Name
+    private void setPropertyApplicationPackage(String text) {
+      if (editor.isScreen1()) {
+        editor.getProjectEditor().changeProjectSettingsProperty(
+          SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
+            SettingsConstants.YOUNG_ANDROID_SETTINGS_APPLICATION_PACKAGE, text);
+      }
+    }
+	
+  //Adding MinAPI Option
+   private void setMinAPIProperty(String value) {
+        if (editor.isScreen1()) {
+            editor.getProjectEditor().changeProjectSettingsProperty(
+                    SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
+                    SettingsConstants.YOUNG_ANDROID_SETTINGS_MINAPI, value);
+        }
+    }
+	
   /**
    * Forces a re-layout of the child components of the container.
    *
@@ -1049,6 +1071,10 @@ public final class MockForm extends MockContainer {
       setPrimaryColorDark(newValue);
     } else if (propertyName.equals(PROPERTY_NAME_ACCENT_COLOR)) {
       setAccentColor(newValue);
+    } else if (propertyName.equals(PROPERTY_NAME_APPLICATION_PACKAGE)) {
+            setPropertyApplicationPackage(newValue);
+	} else if (propertyName.equals(SettingsConstants.YOUNG_ANDROID_SETTINGS_MINAPI)) {
+            setMinAPIProperty(newValue);
     } else if (propertyName.equals(PROPERTY_NAME_HORIZONTAL_ALIGNMENT)) {
       myLayout.setHAlignmentFlags(newValue);
       refreshForm();
